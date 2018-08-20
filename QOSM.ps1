@@ -130,7 +130,7 @@ if ($télécharger)
 
     Invoke-WebRequest -Uri "ftp://transfert.mern.gouv.qc.ca/public/diffusion/RGQ/Vectoriel/Carte_Topo/Local/AQReseauPlus/ESRI(SHP)/AQreseauPlus_SHP.zip" -Outfile "$($QOSMtelechargements)\aqrp.zip"
     "...Territoires autochtones"
-    Invoke-WebRequest -Uri "http://ftp.geogratis.gc.ca/pub/nrcan_rncan/vector/geobase_al_t7a/shp_fra/AL_TA_QC_SHP_fra.zip" -Outfile "$($QOSMtelechargements)\terres_autochtones.zip"
+    Invoke-WebRequest -Uri "http://ftp.geogratis.gc.ca/pub/nrcan_rncan/vector/geobase_al_ta/shp_fra/AL_TA_QC_SHP_fra.zip" -Outfile "$($QOSMtelechargements)\terres_autochtones.zip"
 }
 
 # Transférer les fichiers téléchargés dans le répertoire sources
