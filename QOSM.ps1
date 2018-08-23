@@ -29,7 +29,7 @@ $QOSMroot = "D:\QOSM"
 $PGUser = "postgres"                                 
 
 # Mot de passe de $PGUser
-$PGPassword = "_mot_de_passe"
+$PGPassword = "mot_de_passe"
 
 # Emplacement de ogr2ogr.exe
 $ogr2ogr = "C:\OSGeo4W64\bin\ogr2ogr.exe"
@@ -38,7 +38,22 @@ $ogr2ogr = "C:\OSGeo4W64\bin\ogr2ogr.exe"
 $psql = "C:\progra~1\postgresql\10\bin\psql.exe"
 
 # Télécharger les fichiers
-$télécharger = $true
+$télécharger = $false
+
+# Vous pouvez inclure la couche des territoires récréatifs du Québec (TRQ).
+# Vous devez télécharger le fichier CTRQ-100K_CTRQ-100K_COVER_SO_TEL.zip vous-même sur la Geoboutique du Québec et le copier dans le répertoire sources.
+# PDE = Pourvoiries à droit exclusif
+# PNC = Parc National du Canada
+# PNQ = Parc national du Québec
+# PRE = Parc régional
+# REC = Réserve écologique
+# REF = Réserve faunique
+# RFA = Refuge faunique
+# RNF = Réserve nationale de faune
+# ROM = Refuge d'oiseau migrateur
+# SFO = Station forestière
+# TEC = Territoire exclusif de chasse
+
 
 
 <#
@@ -74,21 +89,21 @@ Réseau Zecs – Données ouvertes
 # Ne pas modifier ces 5 variables.
 $QOSMtelechargements = "$($QOSMRoot)\telechargements"                         # Répertoire pour les téléchargements
 $QOSMsql = "$($QOSMroot)\sql"                                                 # Emplacement des scripts SQL
-$QOSMgéodonnées = "$($QOSMroot)\géodonnées"                                   # Emplacement pour l'extraction etle traitement des fichiers.
+$QOSMgeodata = "$($QOSMroot)\geodata"                                   # Emplacement pour l'extraction etle traitement des fichiers.
 $QOSMVBScript = "$($QOSMroot)\vbscript"                                       # Emplacement des scripts VB
 $QOSMSources = "$($QOSMroot)\sources"
 
 
-# Créer les répertoires telechargements et géodonnées au cas ou ils n'existeraient pas
+# Créer les répertoires telechargements et geodata au cas ou ils n'existeraient pas
 "Création des répertoires"
 New-Item -ItemType Directory -Force -Path $QOSMtelechargements
-New-Item -ItemType Directory -Force -Path $QOSMgéodonnées
+New-Item -ItemType Directory -Force -Path $QOSMgeodata
 New-Item -ItemType Directory -Force -Path $QOSMSources
 
 
 
-# Supprimer tous le contenu du répertoire géodonnées
-Remove-Item "$($QOSMgéodonnées)\*.*"
+# Supprimer tous le contenu du répertoire geodata
+Remove-Item "$($QOSMgeodata)\*.*"
 
 if ($télécharger)
 {
@@ -133,143 +148,149 @@ if ($télécharger)
     Invoke-WebRequest -Uri "http://ftp.geogratis.gc.ca/pub/nrcan_rncan/vector/geobase_al_ta/shp_fra/AL_TA_QC_SHP_fra.zip" -Outfile "$($QOSMtelechargements)\terres_autochtones.zip"
 }
 
-# Transférer les fichiers téléchargés dans le répertoire sources
+# Transférer les fichiers téléchargés dans le répertoire sources et supprimer le répertoire des téléchargements.
+# Ceci est pour éviter de perdre des fichiers si un téléchargement ne fonctionne pas. Nous aurons encore la version précédente dans Sources.
 "Déplacer les téléchargements dans le répertoire sources."
 Move-Item "$($QOSMtelechargements)\*.*" $QOSMSources -Force
+Remove-Item $QOSMtelechargements -Recurse -ErrorAction Ignore
 
 
-# Décompresser les fichiers sources en envoyant le résultat dans le répertoire géodonnées
+# Décompresser les fichiers sources en envoyant le résultat dans le répertoire geodata
 "Extraction des fichiers zip:"
 if(Test-Path -Path "$($QOSMsources)\aeroport.zip"){
     "...Aéroports"
-    Expand-Archive -Path "$($QOSMsources)\aeroport.zip" -DestinationPath $QOSMgéodonnées -force
+    Expand-Archive -Path "$($QOSMsources)\aeroport.zip" -DestinationPath $QOSMgeodata -force
 }
 
 if(Test-path -Path  "$($QOSMsources)\aeroport_piste.zip"){
     "...Aéroports Pistes"
-    Expand-Archive -Path "$($QOSMsources)\aeroport_piste.zip" -DestinationPath $QOSMgéodonnées -force
+    Expand-Archive -Path "$($QOSMsources)\aeroport_piste.zip" -DestinationPath $QOSMgeodata -force
 }
 
 if(Test-Path -Path  "$($QOSMsources)\aqrp.zip"){
     "...AQRéseau+"
-    Expand-Archive -Path "$($QOSMsources)\aqrp.zip" -DestinationPath $QOSMgéodonnées -force
+    Expand-Archive -Path "$($QOSMsources)\aqrp.zip" -DestinationPath $QOSMgeodata -force
 }
 
 if(Test-path -Path  "$($QOSMsources)\energ_l.zip"){
     "...Réseau électrique"
-    Expand-Archive -Path "$($QOSMsources)\energ_l.zip" -DestinationPath $QOSMgéodonnées -force
+    Expand-Archive -Path "$($QOSMsources)\energ_l.zip" -DestinationPath $QOSMgeodata -force
 }
 
 if(Test-Path -Path "$($QOSMsources)\parc_routier.zip"){
     "...Parc routier"
-    Expand-Archive -Path "$($QOSMsources)\parc_routier.zip" -DestinationPath $QOSMgéodonnées -force
+    Expand-Archive -Path "$($QOSMsources)\parc_routier.zip" -DestinationPath $QOSMgeodata -force
 }
 
 if(Test-Path -Path "$($QOSMsources)\radars_photos.zip"){
     "...Radars photos"
-    Expand-Archive -Path "$($QOSMsources)\radars_photos.zip" -DestinationPath $QOSMgéodonnées -force
+    Expand-Archive -Path "$($QOSMsources)\radars_photos.zip" -DestinationPath $QOSMgeodata -force
 }
 
 if(test-Path -Path "$($QOSMsources)\telephone_urg.zip"){
     "...Téléphones d'urgence"
-    Expand-Archive -Path "$($QOSMsources)\telephone_urg.zip" -DestinationPath $QOSMgéodonnées -force
+    Expand-Archive -Path "$($QOSMsources)\telephone_urg.zip" -DestinationPath $QOSMgeodata -force
 }
 
 if(Test-Path -Path "$($QOSMsources)\terres_autochtones.zip"){
     "...Territoires Autochtones"
-    Expand-Archive -Path "$($QOSMsources)\terres_autochtones.zip" -DestinationPath $QOSMgéodonnées -force
+    Expand-Archive -Path "$($QOSMsources)\terres_autochtones.zip" -DestinationPath $QOSMgeodata -force
 }
 
 if(Test-Path -Path "$($QOSMsources)\lieuhabite.zip"){
     "...Villes"
-    Expand-Archive -Path "$($QOSMsources)\lieuhabite.zip" -DestinationPath $QOSMgéodonnées -force
+    Expand-Archive -Path "$($QOSMsources)\lieuhabite.zip" -DestinationPath $QOSMgeodata -force
 }
 
-# Supprimer du répertoire géodonnées les fichiers dont on aura pas besoin.
+if(Test-Path -Path "$($QOSMsources)\CTRQ-100K_CTRQ-100K_COVER_SO_TEL.zip"){
+    "...TRQ"
+    Expand-Archive -Path "$($QOSMsources)\CTRQ-100K_CTRQ-100K_COVER_SO_TEL.zip" -DestinationPath $QOSMgeodata -force
+}
+
+
+# Supprimer du répertoire geodata les fichiers dont on aura pas besoin.
 "Suppression des fichiers inutiles"
-Remove-Item "$($QOSMgéodonnées)\*.atx"
-Remove-Item "$($QOSMgéodonnées)\Route_blanche.*"
-Remove-Item "$($QOSMgéodonnées)\Route_Verte.*"
-Remove-Item "$($QOSMgéodonnées)\Transport_aerien.*"
-Remove-Item "$($QOSMgéodonnées)\Transport_maritime.*"
-Remove-Item "$($QOSMgéodonnées)\*.xml"
-Remove-Item "$($QOSMgéodonnées)\*.html"
+Remove-Item "$($QOSMgeodata)\*.atx"
+Remove-Item "$($QOSMgeodata)\Route_blanche.*"
+Remove-Item "$($QOSMgeodata)\Route_Verte.*"
+Remove-Item "$($QOSMgeodata)\Transport_aerien.*"
+Remove-Item "$($QOSMgeodata)\Transport_maritime.*"
+Remove-Item "$($QOSMgeodata)\*.xml"
+Remove-Item "$($QOSMgeodata)\*.html"
  
 $cmdString = '-overwrite -f "PostgreSQL" PG:"host=localhost port=5432 dbname=qosm user=' + $PGUser + ' password=' + $PGPassword + '" '
 
 
-# Charger les données dans PostGIS
-# Note: J'ai pas (encore) trouvé comment remplacer D:\QOSM\géodonnées par $QOSMgéodonnées dans la chaine de paramètres pour ogr2gr. D'ici à ce que je trouve ou que quelqu'un me donne la solution vous
-# allez devoir remplacer le path dans les 11 commandes suivantes si votre installation n'est pas dans D:\QOSM.
+# Charger les données dans PostGIS.
 "Chargement des données dans PostGIS:"
-if(Test-path -Path "$($QOSMgéodonnées)\Reseau_routier.shp"){
+if(Test-path -Path "$($QOSMgeodata)\Reseau_routier.shp"){
     "...AQRP routier"
-    $cmdParms = $cmdString + 'D:\QOSM\géodonnées\Reseau_routier.shp -t_srs EPSG:4326 -lco geometry_name=geom -nln sources.aqrp'
+    $cmdParms = $cmdString + $($QOSMgeodata) + '\Reseau_routier.shp -t_srs EPSG:4326 -lco geometry_name=geom -nln sources.aqrp'
     start-process -filepath $ogr2ogr $cmdParms  -NoNewWindow -Wait
 }
 
-if(Test-path -Path  "$($QOSMgéodonnées)\Reseau_ferroviaire.shp"){
+if(Test-path -Path  "$($QOSMgeodata)\Reseau_ferroviaire.shp"){
     "...AQRP ferroviaire"
-    $cmdParms = $cmdString + 'D:\QOSM\géodonnées\Reseau_ferroviaire.shp -t_srs EPSG:4326 -lco geometry_name=geom -nln sources.aqcf'
+    $cmdParms = $cmdString  + $($QOSMgeodata) + '\Reseau_ferroviaire.shp -t_srs EPSG:4326 -lco geometry_name=geom -nln sources.aqcf'
     start-process -filepath $ogr2ogr $cmdParms  -NoNewWindow -Wait
 }
 
-if(Test-path -Path  "$($QOSMgéodonnées)\Reseau_ferroviaire_pn.shp"){
+if(Test-path -Path  "$($QOSMgeodata)\Reseau_ferroviaire_pn.shp"){
     "...AQRP points ferroviaires"
-    $cmdParms = $cmdSTring + 'D:\QOSM\géodonnées\Reseau_Ferroviaire_pn.shp -t_srs EPSG:4326 -lco geometry_name=geom -nln sources.aqcfpn'
+    $cmdParms = $cmdSTring + $($QOSMgeodata) + '\Reseau_Ferroviaire_pn.shp -t_srs EPSG:4326 -lco geometry_name=geom -nln sources.aqcfpn'
     start-process -filepath $ogr2ogr $cmdParms  -NoNewWindow -Wait
 }
 
-if(Test-path -Path  "$($QOSMgéodonnées)\energ_l.shp"){
+if(Test-path -Path  "$($QOSMgeodata)\energ_l.shp"){
     "...Réseau électrique"
-    $cmdParms = $cmdString + 'D:\QOSM\géodonnées\energ_l.shp -t_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -nln sources.electrique'
+    $cmdParms = $cmdString + $($QOSMgeodata) + '\energ_l.shp -t_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -nln sources.electrique'
     start-process -filepath $ogr2ogr $cmdParms  -NoNewWindow -Wait
 }
 
-if(Test-path -Path  "$($QOSMgéodonnées)\aeroport.shp"){
+if(Test-path -Path  "$($QOSMgeodata)\aeroport.shp"){
     "...Aéroports"
-    $cmdParms = $cmdString + 'D:\QOSM\géodonnées\aeroport.shp -t_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -nln sources.aeroports'
+    $cmdParms = $cmdString + $($QOSMgeodata) + '\aeroport.shp -t_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -nln sources.aeroports'
     start-process -filepath $ogr2ogr $cmdParms  -NoNewWindow -Wait
 }
 
-if(Test-path -Path  "$($QOSMgéodonnées)\aeroport_piste.shp"){
+if(Test-path -Path  "$($QOSMgeodata)\aeroport_piste.shp"){
     "...Aéroports pistes"
-    $cmdParms = $cmdString + 'D:\QOSM\géodonnées\aeroport_piste.shp -t_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -nln sources.aeroports_pistes'
+    $cmdParms = $cmdString + $($QOSMgeodata) + '\aeroport_piste.shp -t_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -nln sources.aeroports_pistes'
     start-process -filepath $ogr2ogr $cmdParms  -NoNewWindow -Wait
 }
 
-if(Test-path -Path  "$($QOSMgéodonnées)\lieuhabite.shp"){
+if(Test-path -Path  "$($QOSMgeodata)\lieuhabite.shp"){
     "...Villes"
-    $cmdParms = $cmdString + 'D:\QOSM\géodonnées\lieuhabite.shp -t_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -nln sources.villes' 
+    $cmdParms = $cmdString + $($QOSMgeodata) + '\lieuhabite.shp -t_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -nln sources.villes' 
     start-process -filepath $ogr2ogr $cmdParms  -NoNewWindow -Wait
 }
 
-if(Test-path -Path  "$($QOSMgéodonnées)\parc_routier.shp"){
+if(Test-path -Path  "$($QOSMgeodata)\parc_routier.shp"){
     "...Parc routier"
-    $cmdParms = $cmdString + 'D:\QOSM\géodonnées\parc_routier.shp -t_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -nln sources.parcroutier' 
+    $cmdParms = $cmdString  + $($QOSMgeodata) + '\parc_routier.shp -t_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -nln sources.parcroutier' 
     start-process -filepath $ogr2ogr $cmdParms  -NoNewWindow -Wait
 }
 
-if(Test-path -Path  "$($QOSMgéodonnées)\radars_photos.shp"){
+if(Test-path -Path  "$($QOSMgeodata)\radars_photos.shp"){
     "...Photoradars"
-    $cmdParms = $cmdString + 'D:\QOSM\géodonnées\radars_photos.shp -t_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -nln sources.photoradar' 
+    $cmdParms = $cmdString + $($QOSMgeodata) + '\radars_photos.shp -t_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -nln sources.photoradar' 
     start-process -filepath $ogr2ogr $cmdParms  -NoNewWindow -Wait
 }
 
-if(Test-path -Path  "$($QOSMgéodonnées)\telephone_urg.shp"){
+if(Test-path -Path  "$($QOSMgeodata)\telephone_urg.shp"){
     "...Téléphone d'urgence"
-    $cmdParms = $cmdString + 'D:\QOSM\géodonnées\telephone_urg.shp -t_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -nln sources.telephone_urg' 
+    $cmdParms = $cmdString + $($QOSMgeodata) + '\telephone_urg.shp -t_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -nln sources.telephone_urg' 
     start-process -filepath $ogr2ogr $cmdParms  -NoNewWindow -Wait
 }
 
-if(Test-path -Path  "$($QOSMgéodonnées)\al_ta_qc_2_99_fra.shp"){
+if(Test-path -Path  "$($QOSMgeodata)\al_ta_qc_2_99_fra.shp"){
     "...Territoires autochtones"
-    $cmdParms = $cmdString + '-nlt MULTIPOLYGONZ D:\QOSM\géodonnées\al_ta_qc_2_99_fra.shp -s_srs EPSG:4617 -t_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -nln sources.terres_autochtones'
+    $cmdParms = $cmdString + '-nlt MULTIPOLYGONZ ' + $($QOSMgeodata) + '\al_ta_qc_2_99_fra.shp -s_srs EPSG:4617 -t_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -nln sources.terres_autochtones'
     start-process -filepath $ogr2ogr $cmdParms  -NoNewWindow -Wait
 }
 
-# Supprimer le répertoire géodonnées après le chargement des données pour économiser l'espace disque.
-Remove-Item $QOSMgéodonnées -Recurse -ErrorAction Ignore
+# Supprimer le répertoire geodata après le chargement des données pour économiser l'espace disque.
+Remove-Item $QOSMgeodata -Recurse -ErrorAction Ignore
 
 
 # Traiter le fichier excel des barrages avant l'importation des données dans postgis.
@@ -313,9 +334,10 @@ get-content $csv |
     set-content "$file-temp"
 move "$file-temp" $csv -Force
 
-# Exécuter les scripts sql pour telecharger les données dans PostGIS
-# $ProcessName = "$($QOSMroot)\executer_sql.bat"
-# start-process $ProcessName > SQL.Log
+# Créer le script importer_csv.sql
+
+(Get-Content "$($QOSMroot)\importer_csv.gabarit").replace('[source]', $QOSMgeodata) | Set-Content "$($QOSMSQL)\importer_csv.sql"
+
 
 "Exécution des scripts SQL:"
 Set-Item Env:PGPassword $PGPassword
