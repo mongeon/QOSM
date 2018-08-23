@@ -40,21 +40,6 @@ $psql = "C:\progra~1\postgresql\10\bin\psql.exe"
 # Télécharger les fichiers
 $télécharger = $false
 
-# Vous pouvez inclure la couche des territoires récréatifs du Québec (TRQ).
-# Vous devez télécharger le fichier CTRQ-100K_CTRQ-100K_COVER_SO_TEL.zip vous-même sur la Geoboutique du Québec et le copier dans le répertoire sources.
-# PDE = Pourvoiries à droit exclusif
-# PNC = Parc National du Canada
-# PNQ = Parc national du Québec
-# PRE = Parc régional
-# REC = Réserve écologique
-# REF = Réserve faunique
-# RFA = Refuge faunique
-# RNF = Réserve nationale de faune
-# ROM = Refuge d'oiseau migrateur
-# SFO = Station forestière
-# TEC = Territoire exclusif de chasse
-
-
 
 <#
 Source des données
@@ -200,11 +185,6 @@ if(Test-Path -Path "$($QOSMsources)\terres_autochtones.zip"){
 if(Test-Path -Path "$($QOSMsources)\lieuhabite.zip"){
     "...Villes"
     Expand-Archive -Path "$($QOSMsources)\lieuhabite.zip" -DestinationPath $QOSMgeodata -force
-}
-
-if(Test-Path -Path "$($QOSMsources)\CTRQ-100K_CTRQ-100K_COVER_SO_TEL.zip"){
-    "...TRQ"
-    Expand-Archive -Path "$($QOSMsources)\CTRQ-100K_CTRQ-100K_COVER_SO_TEL.zip" -DestinationPath $QOSMgeodata -force
 }
 
 
