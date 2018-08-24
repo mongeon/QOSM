@@ -1,4 +1,4 @@
-<#
+/*
     QOSM - Québec OSM - Collection de scripts et de programmes pour générer une carte du Québec pour l'expéditionnisme, compatible avec l'application OsmAnd (https://osmand.net) à partir de données ouvertes.
     
     Copyright (C) 2018  Eric Gagné, Lachine, Qc
@@ -16,11 +16,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#>
+*/
 
-#####
+/*
 ##  NE PAS MODIFIER NI DÉPLACER CE FICHIER
-#####
+*/
 
 drop table if exists sources.inmoa;
 
@@ -35,7 +35,7 @@ CREATE TABLE sources.inmoa
     type_de_mine character varying COLLATE pg_catalog."default",
     derniere_annee_operation character varying COLLATE pg_catalog."default"
 );
-COPY sources.inmoa FROM 'D:\QOSM\geodata\inmoa.csv' DELIMITERS ',' CSV HEADER ENCODING 'UTF8';
+COPY sources.inmoa FROM 'D:\QOSM\sources\inmoa.csv' DELIMITERS ',' CSV HEADER ENCODING 'UTF8';
 alter table sources.inmoa
 	add column geom geometry(POINT, 4326);
 
@@ -92,7 +92,7 @@ CREATE TABLE sources.barrages
     F7 character varying,
 	F8 character varying
 );
-COPY sources.barrages FROM 'D:\QOSM\geodata\barrages.csv' DELIMITERS ',' CSV HEADER ENCODING 'UTF8';
+COPY sources.barrages FROM 'D:\QOSM\sources\barrages.csv' DELIMITERS ',' CSV HEADER ENCODING 'UTF8';
 alter table sources.barrages
 	add column geom geometry(POINT, 4326);
 
@@ -157,7 +157,7 @@ CREATE TABLE sources.accueils_zecs
     url character varying(80) COLLATE pg_catalog."default",
     photo character varying(80) COLLATE pg_catalog."default"
 );
-COPY sources.accueils_zecs FROM 'D:\QOSM\geodata\accueils_zecs.csv' DELIMITERS ',' CSV HEADER ENCODING 'UTF8';
+COPY sources.accueils_zecs FROM 'D:\QOSM\sources\accueils_zecs.csv' DELIMITERS ',' CSV HEADER ENCODING 'UTF8';
 alter table sources.accueils_zecs
 	add column geom geometry(POINT, 4326);
 	
@@ -210,7 +210,7 @@ CREATE TABLE sources.campings_zecs
 	photo character varying
 );
 
-COPY sources.campings_zecs FROM 'D:\QOSM\geodata\campings_zecs.csv' DELIMITERS ',' CSV HEADER ENCODING 'UTF8';
+COPY sources.campings_zecs FROM 'D:\QOSM\sources\campings_zecs.csv' DELIMITERS ',' CSV HEADER ENCODING 'UTF8';
 Update sources.campings_zecs 
 	set longitude = 0-longitude where longitude > 0;
 	

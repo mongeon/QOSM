@@ -37,9 +37,11 @@ $ogr2ogr = "C:\OSGeo4W64\bin\ogr2ogr.exe"
 # Emplacement de psql.exe
 $psql = "C:\progra~1\postgresql\10\bin\psql.exe"
 
-# Télécharger les fichiers
-$télécharger = $false
+# Télécharger les fichiers: $true=oui, $false=non
+$télécharger = $true
 
+# Vous pouvez inclure la couche des territoires récréatifs du Québec (TRQ).
+# Vous devez télécharger le fichier CTRQ-100K_CTRQ-100K_COVER_SO_TEL.zip vous-même sur la Geoboutique du Québec et le copier dans le répertoire sources.
 
 <#
 Source des données
@@ -74,10 +76,13 @@ Réseau Zecs – Données ouvertes
 # Ne pas modifier ces 5 variables.
 $QOSMtelechargements = "$($QOSMRoot)\telechargements"                         # Répertoire pour les téléchargements
 $QOSMsql = "$($QOSMroot)\sql"                                                 # Emplacement des scripts SQL
-$QOSMgeodata = "$($QOSMroot)\geodata"                                   # Emplacement pour l'extraction etle traitement des fichiers.
+$QOSMgeodata = "$($QOSMroot)\geodata"                                         # Emplacement pour l'extraction etle traitement des fichiers.
 $QOSMVBScript = "$($QOSMroot)\vbscript"                                       # Emplacement des scripts VB
 $QOSMSources = "$($QOSMroot)\sources"
 
+
+
+$startDTM = (Get-Date)
 
 # Créer les répertoires telechargements et geodata au cas ou ils n'existeraient pas
 "Création des répertoires"
@@ -187,6 +192,11 @@ if(Test-Path -Path "$($QOSMsources)\lieuhabite.zip"){
     Expand-Archive -Path "$($QOSMsources)\lieuhabite.zip" -DestinationPath $QOSMgeodata -force
 }
 
+if(Test-Path -Path "$($QOSMsources)\CTRQ-100K_CTRQ-100K_COVER_SO_TEL.zip"){
+    "...TRQ"
+    Expand-Archive -Path "$($QOSMsources)\CTRQ-100K_CTRQ-100K_COVER_SO_TEL.zip" -DestinationPath $QOSMgeodata -force
+}
+
 
 # Supprimer du répertoire geodata les fichiers dont on aura pas besoin.
 "Suppression des fichiers inutiles"
@@ -199,7 +209,7 @@ Remove-Item "$($QOSMgeodata)\*.xml"
 Remove-Item "$($QOSMgeodata)\*.html"
  
 $cmdString = '-overwrite -f "PostgreSQL" PG:"host=localhost port=5432 dbname=qosm user=' + $PGUser + ' password=' + $PGPassword + '" '
-
+$trqcmdString = '-f "PostgreSQL" PG:"host=localhost port=5432 dbname=qosm user=' + $PGUser + ' password=' + $PGPassword + '" '
 
 # Charger les données dans PostGIS.
 "Chargement des données dans PostGIS:"
@@ -269,6 +279,57 @@ if(Test-path -Path  "$($QOSMgeodata)\al_ta_qc_2_99_fra.shp"){
     start-process -filepath $ogr2ogr $cmdParms  -NoNewWindow -Wait
 }
 
+
+Set-Item Env:PGCLIENTENCODING ISO-8859-1
+
+if(Test-path -path  "$($QOSMgeodata)\trq\terzec_s"){
+    "... zecs"
+    $cmdParms = $trqcmdString + '-nlt MULTIPOLYGONZ "' + $($QOSMgeodata) + '\trq\terzec_s" "pal" -a_srs EPSG:4269 -s_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -lco schema=sources -lco overwrite=yes -nln "zecs"'
+    start-process -filepath $ogr2ogr $cmdparms
+}
+
+if(Test-path -path  "$($QOSMgeodata)\trq\terpde_s"){
+    "... Pourvoiries à droits exclusifs"
+    $cmdParms = $trqcmdString + '-nlt MULTIPOLYGONZ "' + $($QOSMgeodata) + '\trq\terpde_s" "pal" -a_srs EPSG:4269 -s_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -lco schema=sources -lco overwrite=yes -nln "pourvoiries"'
+    start-process -filepath $ogr2ogr $cmdparms
+}
+
+if(Test-path -path  "$($QOSMgeodata)\trq\terpnc_s"){
+    "... Parcs Nationaux du Canada"
+    $cmdParms = $trqcmdString + '-nlt MULTIPOLYGONZ "' + $($QOSMgeodata) + '\trq\terpnc_s" "pal" -a_srs EPSG:4269 -s_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -lco schema=sources -lco overwrite=yes -nln "parcs_nationaux_canada"'
+    start-process -filepath $ogr2ogr $cmdparms
+}
+
+if(Test-path -path  "$($QOSMgeodata)\trq\terpnq_s"){
+    "... Parcs Nationaux du Québec"
+    $cmdParms = $trqcmdString + '-nlt MULTIPOLYGONZ "' + $($QOSMgeodata) + '\trq\terpnq_s" "pal" -a_srs EPSG:4269 -s_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -lco schema=sources -lco overwrite=yes -nln "parcs_nationaux_quebec"'
+    start-process -filepath $ogr2ogr $cmdparms
+}
+
+if(Test-path -path  "$($QOSMgeodata)\trq\terpre_s"){
+    "... Parcs Régionaux"
+    $cmdParms = $trqcmdString + '-nlt MULTIPOLYGONZ "' + $($QOSMgeodata) + '\trq\terpre_s" "pal" -a_srs EPSG:4269 -s_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -lco schema=sources -lco overwrite=yes -nln "parcs_regionaux"'
+    start-process -filepath $ogr2ogr $cmdparms
+}
+
+if(Test-path -path  "$($QOSMgeodata)\trq\terref_s"){
+    "... Réserves fauniques"
+    $cmdParms = $trqcmdString + '-nlt MULTIPOLYGONZ "' + $($QOSMgeodata) + '\trq\terref_s" "pal" -a_srs EPSG:4269 -s_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -lco schema=sources -lco overwrite=yes -nln "reserves_fauniques"'
+    start-process -filepath $ogr2ogr $cmdparms
+}
+if(Test-path -path  "$($QOSMgeodata)\trq\terrnf_s"){
+    "... Réserves naturelles de faune"
+    $cmdParms = $trqcmdString + '-nlt MULTIPOLYGONZ "' + $($QOSMgeodata) + '\trq\terrnf_s" "pal" -a_srs EPSG:4269 -s_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -lco schema=sources -lco overwrite=yes -nln "reserves_naturelles_faune"'
+    start-process -filepath $ogr2ogr $cmdparms
+}
+
+if(Test-path -path  "$($QOSMgeodata)\trq\terrom_s"){
+    "... Refuges d'oiseaux migrateurs"
+    $cmdParms = $trqcmdString + '-nlt MULTIPOLYGONZ "' + $($QOSMgeodata) + '\trq\terrom_s" "pal" -a_srs EPSG:4269 -s_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -lco schema=sources -lco overwrite=yes -nln "refuges_oiseaux_migrateurs"'
+    start-process -filepath $ogr2ogr $cmdparms
+}
+
+
 # Supprimer le répertoire geodata après le chargement des données pour économiser l'espace disque.
 Remove-Item $QOSMgeodata -Recurse -ErrorAction Ignore
 
@@ -316,7 +377,7 @@ move "$file-temp" $csv -Force
 
 # Créer le script importer_csv.sql
 
-(Get-Content "$($QOSMroot)\importer_csv.gabarit").replace('[source]', $QOSMgeodata) | Set-Content "$($QOSMSQL)\importer_csv.sql"
+(Get-Content "$($QOSMroot)\importer_csv.gabarit").replace('[source]', $QOSMSources) | Set-Content "$($QOSMSQL)\importer_csv.sql"
 
 
 "Exécution des scripts SQL:"
@@ -381,5 +442,9 @@ start-process -FilePath $psql $cmdparms  -NoNewWindow -Wait
 
 
 Set-Item Env:PGPassword ""
+Set-Item Env:PGCLIENTENCODING ""
 
-Get-Date
+$endDTM = (Get-Date)
+
+# Echo Time elapsed
+"Temps écoulé: $(($endDTM-$startDTM).totalseconds) secondes."

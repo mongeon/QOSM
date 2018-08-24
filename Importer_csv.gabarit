@@ -1,4 +1,4 @@
-<#
+/*
     QOSM - Québec OSM - Collection de scripts et de programmes pour générer une carte du Québec pour l'expéditionnisme, compatible avec l'application OsmAnd (https://osmand.net) à partir de données ouvertes.
     
     Copyright (C) 2018  Eric Gagné, Lachine, Qc
@@ -16,11 +16,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#>
+*/
 
-#####
+/*
 ##  NE PAS MODIFIER NI DÉPLACER CE FICHIER
-#####
+*/
 
 drop table if exists sources.inmoa;
 
