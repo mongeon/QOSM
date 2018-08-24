@@ -13,6 +13,15 @@ drop table if exists sources.photoradar cascade;
 drop table if exists sources.telephone_urg cascade;
 drop table if exists sources.terres_autochtones cascade;
 drop table if exists sources.villes cascade;
+drop table if exists sources.trq;
+drop table if exists sources.zecs;
+drop table if exists sources.parcs_nationaux_canada;
+drop table if exists sources.parcs_nationaux_quebec;
+drop table if exists sources.parcs_regionaux;
+drop table if exists sources.pourvoiries;
+drop table if exists sources.refuges_oiseaux_migrateurs;
+drop table if exists sources.reserves_fauniques;
+drop table if exists sources.reserves_naturelles_faune;
 
 drop table if exists accueils_zecs;
 drop table if exists aeroports;
@@ -29,3 +38,4 @@ drop table if exists photoradar;
 drop table if exists telephone_urg;
 drop table if exists terres_autochtones;
 drop table if exists villes;
+drop table if exists trq
