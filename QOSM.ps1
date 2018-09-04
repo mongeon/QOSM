@@ -15,21 +15,12 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
+   
 #>
 
 <#
 Modifiez les valeurs suivantes selon votre environnement
 #>
-
-# Emplacement où vous avez installé les scripts
-$QOSMroot = "D:\QOSM"
-
-# Code d'usager à utiliser pour se connecter à votre base de données PostGIS
-$PGUser = "postgres"                                 
-
-# Mot de passe de $PGUser
-$PGPassword = "mot_de_passe"
 
 # Emplacement de ogr2ogr.exe
 $ogr2ogr = "C:\OSGeo4W64\bin\ogr2ogr.exe"
@@ -37,7 +28,23 @@ $ogr2ogr = "C:\OSGeo4W64\bin\ogr2ogr.exe"
 # Emplacement de psql.exe
 $psql = "C:\progra~1\postgresql\10\bin\psql.exe"
 
-# Télécharger les fichiers
+# Emplacement où vous avez installé les scripts
+$QOSMroot = "D:\QOSM"
+
+# Serveur PostgreSQL
+$PGServer = "localhost"
+
+# Port serveur
+$PGPort = 5432
+
+# Code d'usager à utiliser pour se connecter à votre base de données PostGIS
+$PGUser = "postgres"                                 
+
+# Mot de passe de $PGUser
+$PGPassword = "vda045ez"
+
+
+# Télécharger les fichiers.  
 $télécharger = $false
 
 # Vous pouvez inclure la couche des territoires récréatifs du Québec (TRQ).
@@ -76,10 +83,9 @@ Réseau Zecs – Données ouvertes
 # Ne pas modifier ces 5 variables.
 $QOSMtelechargements = "$($QOSMRoot)\telechargements"                         # Répertoire pour les téléchargements
 $QOSMsql = "$($QOSMroot)\sql"                                                 # Emplacement des scripts SQL
-$QOSMgeodata = "$($QOSMroot)\geodata"                                   # Emplacement pour l'extraction etle traitement des fichiers.
+$QOSMgeodata = "$($QOSMroot)\geodata"                                         # Emplacement pour l'extraction etle traitement des fichiers.
 $QOSMVBScript = "$($QOSMroot)\vbscript"                                       # Emplacement des scripts VB
 $QOSMSources = "$($QOSMroot)\sources"
-
 
 
 $startDTM = (Get-Date)
@@ -132,10 +138,16 @@ if ($télécharger)
     Invoke-WebRequest -Uri "https://opendata.arcgis.com/datasets/70c40be18a1c4f5797bc4d2229222179_1.csv" -Outfile "$($QOSMtelechargements)\campings_zecs.csv"
 
     "... AQRéseau+"
-
     Invoke-WebRequest -Uri "ftp://transfert.mern.gouv.qc.ca/public/diffusion/RGQ/Vectoriel/Carte_Topo/Local/AQReseauPlus/ESRI(SHP)/AQreseauPlus_SHP.zip" -Outfile "$($QOSMtelechargements)\aqrp.zip"
+    
     "...Territoires autochtones"
     Invoke-WebRequest -Uri "http://ftp.geogratis.gc.ca/pub/nrcan_rncan/vector/geobase_al_ta/shp_fra/AL_TA_QC_SHP_fra.zip" -Outfile "$($QOSMtelechargements)\terres_autochtones.zip"
+
+
+    "...Lieux d'accueils"
+    Invoke-WebRequest -Uri "http://donnees.tourisme.gouv.qc.ca/donnees/Lieux_d_accueil.zip" -Outfile "$($QOSMtelechargements)\Lieux_d_accueil.zip"
+
+    
 }
 
 # Transférer les fichiers téléchargés dans le répertoire sources et supprimer le répertoire des téléchargements.
@@ -197,19 +209,18 @@ if(Test-Path -Path "$($QOSMsources)\CTRQ-100K_CTRQ-100K_COVER_SO_TEL.zip"){
     Expand-Archive -Path "$($QOSMsources)\CTRQ-100K_CTRQ-100K_COVER_SO_TEL.zip" -DestinationPath $QOSMgeodata -force
 }
 
+if(Test-Path -Path "$($QOSMsources)\Lieux_d_accueil.zip"){
+    "...Lieux d'accueil"
+    Expand-Archive -Path "$($QOSMsources)\Lieux_d_accueil.zip" -DestinationPath $QOSMgeodata -force
+}
 
-# Supprimer du répertoire geodata les fichiers dont on aura pas besoin.
-"Suppression des fichiers inutiles"
-Remove-Item "$($QOSMgeodata)\*.atx"
-Remove-Item "$($QOSMgeodata)\Route_blanche.*"
-Remove-Item "$($QOSMgeodata)\Route_Verte.*"
-Remove-Item "$($QOSMgeodata)\Transport_aerien.*"
-Remove-Item "$($QOSMgeodata)\Transport_maritime.*"
-Remove-Item "$($QOSMgeodata)\*.xml"
-Remove-Item "$($QOSMgeodata)\*.html"
- 
-$cmdString = '-overwrite -f "PostgreSQL" PG:"host=localhost port=5432 dbname=qosm user=' + $PGUser + ' password=' + $PGPassword + '" '
-$trqcmdString = '-f "PostgreSQL" PG:"host=localhost port=5432 dbname=qosm user=' + $PGUser + ' password=' + $PGPassword + '" '
+
+$PGConnectStr = "host=" + $PGServer + " port=" + $PGPort + " dbname=qosm user=" + $PGUser + " password=" + $PGPassword
+
+$cmdString = '-overwrite -f "PostgreSQL" PG:"' + $PGConnectStr + '" '
+$trqcmdString = '-f "PostgreSQL" PG:"' + $PGConnectStr + '" '
+
+Set-Item Env:PGCLIENTENCODING UTF-8
 
 # Charger les données dans PostGIS.
 "Chargement des données dans PostGIS:"
@@ -244,7 +255,7 @@ if(Test-path -Path  "$($QOSMgeodata)\aeroport.shp"){
 }
 
 if(Test-path -Path  "$($QOSMgeodata)\aeroport_piste.shp"){
-    "...Aéroports pistes"
+    "...Aéroports pistes" 
     $cmdParms = $cmdString + $($QOSMgeodata) + '\aeroport_piste.shp -t_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -nln sources.aeroports_pistes'
     start-process -filepath $ogr2ogr $cmdParms  -NoNewWindow -Wait
 }
@@ -279,6 +290,16 @@ if(Test-path -Path  "$($QOSMgeodata)\al_ta_qc_2_99_fra.shp"){
     start-process -filepath $ogr2ogr $cmdParms  -NoNewWindow -Wait
 }
 
+
+
+# Les lieux d'accueils sont dans un fichiers .xml
+# Il faut exécuter un programme VB.NET (ImporterLieuxAccueil.exe) pour les charger dans la base de données
+# Le code source est publié sous licence GPL à l'adresse https://github.com/GrosChialeux/ImporterLieuxAccueil
+$DotNetConnectStr = "Server="+$PGServer+";Port="+$PGPort+";UserID="+$PGUser+";database=qosm;password="+$PGPassword
+$Programme = "$($QOSMroot)\programmes\ImporterLieuxAccueil.exe"
+$cmdParms = "$($QOSMgeodata)\lieux_d_accueil.xml $($DotNetConnectStr)"
+
+start-process -filepath $Programme $cmdParms
 
 Set-Item Env:PGCLIENTENCODING ISO-8859-1
 
@@ -380,6 +401,8 @@ move "$file-temp" $csv -Force
 
 (Get-Content "$($QOSMroot)\importer_csv.gabarit").replace('[source]', $QOSMSources) | Set-Content "$($QOSMSQL)\importer_csv.sql"
 
+Set-Item Env:PGCLIENTENCODING UTF-8
+
 
 "Exécution des scripts SQL:"
 Set-Item Env:PGPassword $PGPassword
@@ -388,8 +411,10 @@ Set-Item Env:PGPassword $PGPassword
 $cmdparms = '-d qosm -U ' + $PGUser + ' -f sql\importer_csv.sql'
 start-process -FilePath $psql $cmdparms  -NoNewWindow -Wait
 
-"Traitemen des données:"
+
+"Traitement des données:"
 "...Aéroports"
+Set-Item Env:PGCLIENTENCODING UTF-8
 $cmdparms = '-d qosm -U ' + $PGUser + ' -f sql\Aeroports.sql'
 start-process -FilePath $psql $cmdparms  -NoNewWindow -Wait
 
@@ -437,13 +462,21 @@ start-process -FilePath $psql $cmdparms  -NoNewWindow -Wait
 $cmdParms = '-d qosm -U ' + $PGUser + ' -f sql\Terres_Autochtones.sql'
 start-process -FilePath $psql $cmdparms  -NoNewWindow -Wait
 
+"...Fermetures de ponts depuis la dernière mise à jour AQ Réseau+."
+$cmdParms = '-d qosm -U ' + $PGUser + ' -f sql\Fermetures_Ponts.sql'
+start-process -FilePath $psql $cmdparms  -NoNewWindow -Wait
+
+
 "...AQRéseau+ (Réseau routier et ferroviaire)"
 $cmdParms = '-d qosm -U ' + $PGUser + ' -f sql\aqrp.sql'
 start-process -FilePath $psql $cmdparms  -NoNewWindow -Wait
 
-
 "...TRQ (Territoires Récréatifs)"
 $cmdParms = '-d qosm -U ' + $PGUser + ' -f sql\Territoires_recreatifs.sql'
+start-process -FilePath $psql $cmdparms  -NoNewWindow -Wait
+
+"...Tourisme (Lieux d'accueil)"
+$cmdParms = '-d qosm -U ' + $PGUser + ' -f sql\Tourisme.sql'
 start-process -FilePath $psql $cmdparms  -NoNewWindow -Wait
 
 Set-Item Env:PGPassword ""

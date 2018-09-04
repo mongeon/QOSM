@@ -1,3 +1,8 @@
+-- Réparer les données incorrectes.
+Update sources.aeroports set nomnavcana = 'Dolbeau-Mistassini/Potvin Héli-Base (héli.)' where codeindic = 'CPH4';
+update sources.aeroports set nomnavcana = 'Dolbeau-Saint-Félicien' where codeindic = 'CYDO';
+update sources.aeroports set nomnavcana = 'Montréal/Sacré-Coeur (héli.)' where codeindic = 'CSZ8';
+
 
 Drop Table if Exists travail.aeroports;
 Create table travail.aeroports (like sources.aeroports including all);
@@ -57,3 +62,5 @@ alter table public.aeroports
 	drop column ogc_fid;
 	
 drop table travail.aeroports;
+
+    

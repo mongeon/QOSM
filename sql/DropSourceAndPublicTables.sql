@@ -22,6 +22,19 @@ drop table if exists sources.pourvoiries;
 drop table if exists sources.refuges_oiseaux_migrateurs;
 drop table if exists sources.reserves_fauniques;
 drop table if exists sources.reserves_naturelles_faune;
+drop table if exists sources.etablissement;
+drop table if exists sources.etbl_type;
+drop table if exists sources.etbl_types;
+drop table if exists sources.etbl_contact;
+drop table if exists sources.etbl_contacts;
+drop table if exists sources.etbl_attribut;
+drop table if exists sources.etbl_attributs;
+drop table if exists sources.etbl_caracteristique;
+drop table if exists sources.etbl_caracteristiques;
+drop table if exists sources.etbl_adresse;
+drop table if exists sources.etbl_adresses;
+drop table if exists sources.tourisme;
+
 
 drop table if exists accueils_zecs;
 drop table if exists aeroports;
@@ -38,4 +51,5 @@ drop table if exists photoradar;
 drop table if exists telephone_urg;
 drop table if exists terres_autochtones;
 drop table if exists villes;
-drop table if exists trq
+drop table if exists trq;
+drop table if exists tourisme;

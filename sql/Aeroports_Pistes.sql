@@ -1,3 +1,7 @@
+Update sources.aeroports_pistes set nomnavcana = 'Dolbeau-Mistassini/Potvin Héli-Base (héli.)' where codeindic = 'CPH4';
+update sources.aeroports_pistes set nomnavcana = 'Dolbeau-Saint-Félicien' where codeindic = 'CYDO';
+update sources.aeroports_pistes set nomnavcana = 'Montréal/Sacré-Coeur (héli.)' where codeindic = 'CSZ8';
+
 Drop Table if Exists travail.aeroports_pistes;
 Create table travail.aeroports_pistes (like sources.aeroports_pistes including all);
 Insert into travail.aeroports_pistes select * from sources.aeroports_pistes;
