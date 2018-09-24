@@ -71,8 +71,8 @@ alter table accueils_zecs
 	drop column zec_id;
 	
 update accueils_zecs set description = replace(description, E'\r\n',' ');
-
+update accueils_zecs set description = replace(description, '///','|');
+update accueils_zecs set description = replace(description, '"','');
 drop table travail.accueils_zecs;
-
 
 

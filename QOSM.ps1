@@ -41,11 +41,11 @@ $PGPort = 5432
 $PGUser = "postgres"                                 
 
 # Mot de passe de $PGUser
-$PGPassword = "vda045ez"
+$PGPassword = "mot_de_passe"
 
 
 # Télécharger les fichiers.  
-$télécharger = $false
+$télécharger = $true
 
 # Vous pouvez inclure la couche des territoires récréatifs du Québec (TRQ).
 # Vous devez télécharger le fichier CTRQ-100K_CTRQ-100K_COVER_SO_TEL.zip vous-même sur la Geoboutique du Québec et le copier dans le répertoire sources.
@@ -256,7 +256,7 @@ if(Test-path -Path  "$($QOSMgeodata)\aeroport.shp"){
 
 if(Test-path -Path  "$($QOSMgeodata)\aeroport_piste.shp"){
     "...Aéroports pistes" 
-    $cmdParms = $cmdString + $($QOSMgeodata) + '\aeroport_piste.shp -t_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -nln sources.aeroports_pistes'
+    $cmdParms = $cmdString + '-nlt MULTIPOLYGONZ ' + $($QOSMgeodata) + '\aeroport_piste.shp -t_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -nln sources.aeroports_pistes'
     start-process -filepath $ogr2ogr $cmdParms  -NoNewWindow -Wait
 }
 
@@ -295,6 +295,9 @@ if(Test-path -Path  "$($QOSMgeodata)\al_ta_qc_2_99_fra.shp"){
 # Les lieux d'accueils sont dans un fichiers .xml
 # Il faut exécuter un programme VB.NET (ImporterLieuxAccueil.exe) pour les charger dans la base de données
 # Le code source est publié sous licence GPL à l'adresse https://github.com/GrosChialeux/ImporterLieuxAccueil
+
+Set-Item Env:PGCLIENTENCODING UTF-8
+
 $DotNetConnectStr = "Server="+$PGServer+";Port="+$PGPort+";UserID="+$PGUser+";database=qosm;password="+$PGPassword
 $Programme = "$($QOSMroot)\programmes\ImporterLieuxAccueil.exe"
 $cmdParms = "$($QOSMgeodata)\lieux_d_accueil.xml $($DotNetConnectStr)"
@@ -414,7 +417,6 @@ start-process -FilePath $psql $cmdparms  -NoNewWindow -Wait
 
 "Traitement des données:"
 "...Aéroports"
-Set-Item Env:PGCLIENTENCODING UTF-8
 $cmdparms = '-d qosm -U ' + $PGUser + ' -f sql\Aeroports.sql'
 start-process -FilePath $psql $cmdparms  -NoNewWindow -Wait
 

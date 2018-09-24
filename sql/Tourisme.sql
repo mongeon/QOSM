@@ -1,3 +1,4 @@
+
 drop table if exists sources.tourisme;
 
 CREATE TABLE sources.tourisme
@@ -178,3 +179,26 @@ drop table if exists sources.etbl_caracteristique;
 drop table if exists sources.etbl_caracteristiques;
 drop table if exists sources.etbl_adresse;
 drop table if exists sources.etbl_adresses;
+
+update tourisme set description = replace(description, '¿','''');
+
+
+Update tourisme set description = replace(description, $$<span style="font-family: 'Verdana','sans-serif'; font-size: 9pt; mso-fareast-font-family: Calibri; mso-ansi-language: FR-CA; mso-fareast-language: FR-CA; mso-bidi-language: AR-SA; mso-bidi-font-family: Arial;">$$, '');
+update tourisme set description = replace(description, $$<span style="font-family: Arial, sans-serif; font-size: 10pt;">$$,'');
+update tourisme set description = replace(description, $$<span style="color: black; font-family: 'Verdana','sans-serif'; font-size: 9pt;">$$,'');
+update tourisme set description = replace(description, $$<span style="margin: 0px; color: #333333; font-family: 'Arial','sans-serif'; font-size: 12pt;">$$,'');
+update tourisme set description = replace(description, $$<p class="MsoNormal" style="text-align: justify;"><span style="font-size: 9pt; line-height: 107%; font-family: Verdana, sans-serif; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">$$,'');
+update tourisme set description = replace(description, $$<span style="font-family: Verdana, sans-serif; line-height: 12.8400001525879px;">$$,'');
+update tourisme set description = replace(description, $$<span style="font-family: Verdana, sans-serif; font-size: 9pt; line-height: 107%;">$$,'');
+update tourisme set description = replace(description, $$<p class="MsoNormal" style="text-align: justify;"> $$,'');
+update tourisme set description = replace(description, '<strong>','');
+update tourisme set description = replace(description, '</strong>','');
+update tourisme set description = replace(description, $$<span style="color: #000000;">$$,'');
+update tourisme set description = replace(description, $$<p style="-qt-block-indent: 0; text-indent: 0px; margin: 0px;">$$,'');
+update tourisme set description = replace(description, $$<p class="MsoNormal" style="margin-bottom: 13.5pt;"><span style="font-size: 10pt; font-family: Arial, sans-serif;">$$,'');
+update tourisme set description = replace(description, $$<br />$$,'');
+update tourisme set description = replace(description, $$</span>$$,'');
+update tourisme set description = replace(description, $$</em>$$,'');
+update tourisme set description = replace(description, $$<em>$$,'');
+select * from tourisme where description like '%>%';
+select * from tourisme where description like '%<%';
