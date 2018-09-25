@@ -284,9 +284,9 @@ if(Test-path -Path  "$($QOSMgeodata)\telephone_urg.shp"){
     start-process -filepath $ogr2ogr $cmdParms  -NoNewWindow -Wait
 }
 
-if(Test-path -Path  "$($QOSMgeodata)\al_ta_qc_2_99_fra.shp"){
+if(Test-path -Path  "$($QOSMgeodata)\al_ta_qc_2_100_fra.shp"){
     "...Territoires autochtones"
-    $cmdParms = $cmdString + '-nlt MULTIPOLYGONZ ' + $($QOSMgeodata) + '\al_ta_qc_2_99_fra.shp -s_srs EPSG:4617 -t_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -nln sources.terres_autochtones'
+    $cmdParms = $cmdString + '-nlt MULTIPOLYGONZ ' + $($QOSMgeodata) + '\al_ta_qc_2_100_fra.shp -s_srs EPSG:4617 -t_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -nln sources.terres_autochtones'
     start-process -filepath $ogr2ogr $cmdParms  -NoNewWindow -Wait
 }
 
