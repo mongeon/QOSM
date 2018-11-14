@@ -1,3 +1,22 @@
+/*
+    QOSM - Québec OSM - Collection de scripts et de programmes pour générer une carte du Québec pour l'expéditionnisme, compatible avec l'application OsmAnd (https://osmand.net) à partir de données ouvertes.
+    
+    copyright (C) 2018  Eric Gagné, Lachine, Qc
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 Update sources.aeroports_pistes set nomnavcana = 'Dolbeau-Mistassini/Potvin Héli-Base (héli.)' where codeindic = 'CPH4';
 update sources.aeroports_pistes set nomnavcana = 'Dolbeau-Saint-Félicien' where codeindic = 'CYDO';
 update sources.aeroports_pistes set nomnavcana = 'Montréal/Sacré-Coeur (héli.)' where codeindic = 'CSZ8';
@@ -28,25 +47,22 @@ Update travail.aeroports_pistes set surface = Replace(surface, 'Sable', 'sand');
 Update travail.aeroports_pistes set surface = Replace(surface, 'Gazon', 'grass');
 
 drop table if exists public.aeroports_pistes;
-create table public.aeroports_pistes (like travail.aeroports_pistes including all);
-insert into public.aeroports_pistes select * from travail.aeroports_pistes;
+Create table aeroports_pistes
+(
+    icao character varying,
+    name character varying,
+    surface character varying,
+    aeroway character varying,
+    length character varying,
+    ele character varying,
+    geom geometry(polygonz, 4326)
+);
 
-alter table public.aeroports_pistes
-	drop column gid,
-	drop column nom,
-	drop column code,
-	drop column idobj,
-    drop column version,
-    drop column elevapieds,
-    drop column longpiste,
-    drop column nbrpiste,
-    drop column indicpiste,
-    drop column province,
-    drop column datemaj,
-    drop column remarque,
-	drop column source,
-	drop column datdebappt,
-	drop column datmodif, 
-	drop column objectid,
-	drop column ogc_fid;	
-	drop table travail.aeroports_pistes;
+insert into aeroports_pistes
+(
+    icao, name, surface, aeroway, length, ele, geom
+)
+select  icao, name, surface, aeroway, length, ele, (st_dump(geom)).geom
+from    travail.aeroports_pistes;
+
+drop table travail.aeroports_pistes;

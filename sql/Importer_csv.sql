@@ -1,7 +1,7 @@
 /*
     QOSM - Québec OSM - Collection de scripts et de programmes pour générer une carte du Québec pour l'expéditionnisme, compatible avec l'application OsmAnd (https://osmand.net) à partir de données ouvertes.
     
-    Copyright (C) 2018  Eric Gagné, Lachine, Qc
+    copyright (C) 2018  Eric Gagné, Lachine, Qc
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,7 +19,10 @@
 */
 
 /*
-##  NE PAS MODIFIER NI DÉPLACER CE FICHIER
+  Ne modifiez pas ce fichier
+  Juste pour être clair, ça veut dire qu'il faut pas modifiez ce ficheir.
+  Mais au cas ou ce serait toujours pas clair
+  CE FICHIER NE DOIT PAS ÊTRE MODIFIÉ !
 */
 
 drop table if exists sources.inmoa;
@@ -35,7 +38,7 @@ CREATE TABLE sources.inmoa
     type_de_mine character varying COLLATE pg_catalog."default",
     derniere_annee_operation character varying COLLATE pg_catalog."default"
 );
-COPY sources.inmoa FROM 'D:\QOSM\sources\inmoa.csv' DELIMITERS ',' CSV HEADER ENCODING 'UTF8';
+\copy sources.inmoa FROM 'D:/qosm/geodata/inmoa.csv' DELIMITERS ',' CSV HEADER ENCODING 'UTF8';
 alter table sources.inmoa
 	add column geom geometry(POINT, 4326);
 
@@ -92,7 +95,7 @@ CREATE TABLE sources.barrages
     F7 character varying,
 	F8 character varying
 );
-COPY sources.barrages FROM 'D:\QOSM\sources\barrages.csv' DELIMITERS ',' CSV HEADER ENCODING 'UTF8';
+\copy sources.barrages FROM 'D:/qosm/geodata/barrages.csv' DELIMITERS ',' CSV HEADER ENCODING 'UTF8';
 alter table sources.barrages
 	add column geom geometry(POINT, 4326);
 
@@ -157,7 +160,7 @@ CREATE TABLE sources.accueils_zecs
     url character varying(80) COLLATE pg_catalog."default",
     photo character varying(80) COLLATE pg_catalog."default"
 );
-COPY sources.accueils_zecs FROM 'D:\QOSM\sources\accueils_zecs.csv' DELIMITERS ',' CSV HEADER ENCODING 'UTF8';
+\copy sources.accueils_zecs FROM 'D:/qosm/geodata/accueils_zecs.csv' DELIMITERS ',' CSV HEADER ENCODING 'UTF8';
 alter table sources.accueils_zecs
 	add column geom geometry(POINT, 4326);
 	
@@ -210,7 +213,7 @@ CREATE TABLE sources.campings_zecs
 	photo character varying
 );
 
-COPY sources.campings_zecs FROM 'D:\QOSM\sources\campings_zecs.csv' DELIMITERS ',' CSV HEADER ENCODING 'UTF8';
+\copy sources.campings_zecs FROM 'D:/qosm/geodata/campings_zecs.csv' DELIMITERS ',' CSV HEADER ENCODING 'UTF8';
 Update sources.campings_zecs 
 	set longitude = 0-longitude where longitude > 0;
 	
@@ -221,5 +224,130 @@ Update sources.campings_zecs
 	set geom = ST_SetSRID(ST_MakePoint(longitude, latitude) ,4326);
 	
 
+drop table if exists sources.etablissement;
+Create table sources.etablissement
+(
+	etbl_id int, 
+	etbl_nom_fr character varying, 
+	etbl_nom_en character varying, 
+	etbl_desc_fr character varying, 
+	etbl_desc_en character varying, 
+	etbl_reservable character varying, 
+	etablissement_id int
+);
+\copy sources.etablissement FROM 'D:/qosm/geodata/etablissement.csv' DELIMITERS '|' QUOTE '`' CSV HEADER ENCODING 'UTF8';
 
+drop table if exists sources.etbl_adresses;
+create table sources.etbl_adresses
+(
+	adresses_id int, 
+	etablissement_id int
+);
+\copy sources.etbl_adresses FROM 'D:/qosm/geodata/adresses.csv' DELIMITERS '|' QUOTE '`' CSV HEADER ENCODING 'UTF8';
 
+drop table if exists sources.etbl_adresse;
+create table sources.etbl_adresse
+(
+	adr_id int, 
+	adr_genre_id character varying, 
+	adr_genre_fr character varying, 
+	adr_genre_en character varying, 
+	adr_principale character varying, 
+	adr_civique character varying, 
+	adr_municipalite character varying, 
+	adr_province character varying, 
+	adr_pays character varying, 
+	adr_code_postal character varying, 
+	adr_pnt_servc_fr character varying, 
+	adr_pnt_servc_en character varying, 
+	adr_pnt_serv_defaut character varying, 
+	adr_latitude character varying, 
+	adr_longitude character varying, 
+	adr_comment_fr character varying, 
+	adr_comment_en character varying, 
+	adresses_id int
+);
+\copy sources.etbl_adresse FROM 'D:/qosm/geodata/adresse.csv' DELIMITERS '|' QUOTE '`' CSV HEADER ENCODING 'UTF8';
+
+drop table if exists sources.etbl_types;
+create table sources.etbl_types
+(
+	etbl_types_id int, 
+	etablissement_id int
+);
+\copy sources.etbl_types FROM 'D:/qosm/geodata/etbl_types.csv' DELIMITERS '|' QUOTE '`' CSV HEADER ENCODING 'UTF8';
+
+drop table if exists sources.etbl_type;
+create table sources.etbl_type
+(
+	etbl_type_genre character varying, 
+	etbl_type_id int, 
+	etbl_type_fr character varying, 
+	etbl_type_en character varying, 
+	etbl_type_grp_id character varying, 
+	etbl_type_grp_fr character varying, 
+	etbl_type_grp_en character varying, 
+	etbl_type_catg_id int, 
+	etbl_type_catg_fr character varying, 
+	etbl_type_catg_en character varying, 
+	etbl_types_id int
+);
+\copy sources.etbl_type FROM 'D:/qosm/geodata/etbl_type.csv' DELIMITERS '|' QUOTE '`' CSV HEADER ENCODING 'UTF8';
+
+drop table If exists sources.etbl_contacts;
+create table sources.etbl_contacts
+(
+	contacts_id int, 
+	etablissement_id int
+);
+\copy sources.etbl_contacts FROM 'D:/qosm/geodata/contacts.csv' DELIMITERS '|' QUOTE '`' CSV HEADER ENCODING 'UTF8';
+
+drop table if exists sources.etbl_contact;
+create table sources.etbl_contact
+(
+	cntcg_genre_id character varying, 
+	cntct_genre_fr character varying, 
+	cntct_genre_en character varying, 
+	cntct_val_fr character varying, 
+	cntct_val_en character varying, 
+	contacts_id int
+);
+\copy sources.etbl_contact FROM 'D:/qosm/geodata/contact.csv' DELIMITERS '|' QUOTE '`' CSV HEADER ENCODING 'UTF8';
+
+drop table if exists sources.etbl_caracteristiques;
+create table sources.etbl_caracteristiques
+(
+	caracteristiques_id int, 
+	etablissement_id int
+);
+\copy sources.etbl_caracteristiques FROM 'D:/qosm/geodata/caracteristiques.csv' DELIMITERS '|' QUOTE '`' CSV HEADER ENCODING 'UTF8';
+
+drop table if exists sources.etbl_caracteristique;
+create table sources.etbl_caracteristique
+(
+	caract_id character varying, 
+	caract_nom_fr character varying, 
+	caract_nom_en character varying, 
+	caracteristique_id int, 
+	caracteristiques_id int
+);
+\copy sources.etbl_caracteristique FROM 'D:/qosm/geodata/caracteristique.csv' DELIMITERS '|' QUOTE '`' CSV HEADER ENCODING 'UTF8';
+
+drop table If exists sources.etbl_attributs;
+create table sources.etbl_attributs
+(
+	caract_attributs_id int, 
+	caracteristique_id int
+);
+\copy sources.etbl_attributs FROM 'D:/qosm/geodata/caract_attributs.csv' DELIMITERS '|' QUOTE '`' CSV HEADER ENCODING 'UTF8';
+
+drop table If exists sources.etbl_attribut;
+create table sources.etbl_attribut
+(
+	caract_attrib_id character varying, 
+	caract_attrb_nom_fr character varying, 
+	charact_attrb_nom_en character varying, 
+	caract_attrb_val character varying, 
+	caract_attributs_id int
+);
+\copy sources.etbl_attribut FROM 'D:/qosm/geodata/caract_attribut.csv' DELIMITERS '|' QUOTE '`' CSV HEADER ENCODING 'UTF8';

@@ -1,3 +1,22 @@
+/*
+    QOSM - Québec OSM - Collection de scripts et de programmes pour générer une carte du Québec pour l'expéditionnisme, compatible avec l'application OsmAnd (https://osmand.net) à partir de données ouvertes.
+    
+    copyright (C) 2018  Eric Gagné, Lachine, Qc
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 Drop table if exists travail.trq;
 Create Table travail.trq
 (
@@ -30,9 +49,23 @@ union all
 select geom, trq_nm_ter, 'protected_area', 'nature_reserve', '' from sources.reserves_fauniques;
 
 drop table if exists trq;
-create table trq (like travail.trq including all);
+Create table trq
+(
+    name character varying,
+    boundary character varying,
+    leisure character varying,
+    protection_title character varying,
+    geom geometry(polygonz,4326)
+);
 
-insert into trq
-	select * from travail.trq;
-
+Insert into trq
+(
+    name,
+    boundary,
+    leisure,
+    protection_title,
+    geom
+)
+Select  name, boundary, leisure, protection_title, (st_dump(geom)).geom
+from    travail.trq;
 drop table travail.trq;

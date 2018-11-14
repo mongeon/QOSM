@@ -1,3 +1,22 @@
+/*
+    QOSM - Québec OSM - Collection de scripts et de programmes pour générer une carte du Québec pour l'expéditionnisme, compatible avec l'application OsmAnd (https://osmand.net) à partir de données ouvertes.
+    
+    copyright (C) 2018  Eric Gagné, Lachine, Qc
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 drop table if exists sources.accueils_zecs cascade;
 drop table if exists sources.aeroports cascade;
 drop table if exists sources.aeroports_pistes cascade;
@@ -52,4 +71,16 @@ drop table if exists telephone_urg;
 drop table if exists terres_autochtones;
 drop table if exists villes;
 drop table if exists trq;
+drop table if exists tourisme;
+drop table if exists etablissement;
+drop table if exists etbl_type;
+drop table if exists etbl_types;
+drop table if exists etbl_contact;
+drop table if exists etbl_contacts;
+drop table if exists etbl_attribut;
+drop table if exists etbl_attributs;
+drop table if exists etbl_caracteristique;
+drop table if exists etbl_caracteristiques;
+drop table if exists etbl_adresse;
+drop table if exists etbl_adresses;
 drop table if exists tourisme;

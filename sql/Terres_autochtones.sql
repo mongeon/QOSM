@@ -1,3 +1,22 @@
+/*
+    QOSM - Québec OSM - Collection de scripts et de programmes pour générer une carte du Québec pour l'expéditionnisme, compatible avec l'application OsmAnd (https://osmand.net) à partir de données ouvertes.
+    
+    copyright (C) 2018  Eric Gagné, Lachine, Qc
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 Drop table if exists travail.terres_autochtones;
 create table travail.terres_autochtones (like sources.terres_autochtones including all);
 insert into travail.terres_autochtones select * from sources.terres_autochtones;
@@ -41,7 +60,19 @@ alter table travail.terres_autochtones
 	rename column nom2 to name;
 	
 drop table if exists terres_autochtones;
-create table terres_autochtones (like travail.terres_autochtones including all);
-insert into terres_autochtones select * from travail.terres_autochtones;
+
+Create table terres_autochtones
+(
+    name character varying,
+    boundary character varying,
+    admin_level character varying,
+    geom geometry(polygonz,4326)
+);
+insert into terres_autochtones 
+(
+  Name, boundary, admin_level, geom
+)
+select  name, boundary, admin_level, (st_dump(geom)).geom
+from    travail.terres_autochtones;
 	
 drop table travail.terres_autochtones;

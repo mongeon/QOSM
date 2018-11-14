@@ -1,21 +1,20 @@
 /*
-Créer la base de données.
-Installer les extensions PostGIS: CREATE EXTENSION postgis;
+    QOSM - Québec OSM - Collection de scripts et de programmes pour générer une carte du Québec pour l'expéditionnisme, compatible avec l'application OsmAnd (https://osmand.net) à partir de données ouvertes.
+    
+    copyright (C) 2018  Eric Gagné, Lachine, Qc
 
-Créer 2 nouveaux schémas: sources et travail.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-Utilisation des schémas
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-Sources: sera utilisé pour les données originales qui ne seront jamais modifiées.
-Travail: copie de travail des données dans sources
-Public: Données finales, prêtes à publier
-
-Importer les shapefile AQRP dans le schéma "sources" en utilisant les noms suivants
-
-Reseau_routier.shp => aqrpxx (xx = numéro de version, 4.0 au moment d'écrire ce guide.)
-Reseau_ferroviaire.shp => aqcfxx (cf = Chemin Fer)
-Reseau_ferroviaire_PN => aqcfpn (cf = Chemin Fer, pn = Points)
-
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 /* Copier dans le schéma travail */

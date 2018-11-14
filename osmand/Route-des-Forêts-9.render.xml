@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- La Route des Forêts version 3.0.6.  Auteur: Eric Gagné. -->
+<!-- Utiliser avec La_Route_des_Forêts.obf 4.1.0 -->
+	
+
+<renderingStyle name="Route des forêts 9" depends="default" defaultColor="#f1eae4" version="3.0.05">
+	<!-- Rendering Property -->
+	<renderingProperty attr="appMode" name="Rendering mode" description="Map optimization for respective User Profile" type="string" possibleValues="browse map,car,bicycle,pedestrian"/>
+	<renderingConstant name="null" value="#00000000"/>
+	<renderingProperty attr="engine_v1" type="boolean"/>
+	<renderingAttribute name="winterroadShadowColor">
+		<case attrColorValue="#995f5fff"/>
+	</renderingAttribute>
+	<renderingAttribute name="winterroadTrackSubstrateColor">
+		<case attrColorValue="#995f5fff"/>
+	</renderingAttribute>
+	<renderingAttribute name="trackColor">
+		<case maxzoom="13" attrColorValue="#569D37">
+			<apply_if nightMode="true" attrColorValue="#4F7A73"/>
+		</case>
+		<case attrColorValue="#628F59">
+			<apply_if nightMode="true" attrColorValue="#4F7A73"/>
+		</case>
+	</renderingAttribute>
+	<renderingAttribute name="trackSubstrateColor">
+		<case noPolygons="true">
+			<apply attrColorValue="#99ffffff">
+				<apply_if nightMode="true" attrColorValue="#33333333"/>
+			</apply>
+		</case>
+		<case additional="winter_road=yes" attrColorValue="$winterroadTrackSubstrateColor"/>
+		<case nightMode="true" attrColorValue="$null"/>
+		<case hikingRoutesOSMC="walkingRoutesOSMC" attrColorValue="#aaebe7e4"/>
+		<case attrColorValue="#30ebe7e4"/>
+	</renderingAttribute>
+	<renderingConstant name="trackStrokeWidth" value="1:1"/>
+	<renderingConstant name="trackWithSurfaceStrokeWidth" value="1:1"/>
+	<renderingConstant name="trackLowZoomStrokeWidth" value="0.7"/>
+	<renderingConstant name="trackLowZoomStrokeWidth2" value="1.1"/>
+	<renderingConstant name="trackPathEffect" value="7_2"/>
+	<renderingConstant name="trackBridgeWidth" value="4:2.5"/>
+	<renderingConstant name="trackBridgeInnerWidth" value="3:2"/>
+	<renderingConstant name="trackTunnelPathEffect" value="3_3"/>
+	<renderingAttribute name="trackColor">
+		<switch>
+			<!-- Vert -->
+			<case additional="tracktype=grade1" attrColorValue="#107738" strokeWidth="4:1">
+				<apply_if nightMode="true" attrColorValue="#107738"/>
+			</case>
+			<!-- Bleu -->
+			<case additional="tracktype=grade2" attrColorValue="#0A22D9">
+				<apply_if nightMode="true" attrColorValue="#0A22D9"/>
+			</case>
+			<!-- Jaune -->
+			<case additional="tracktype=grade3" attrColorValue="#FFC000">
+				<apply_if nightMode="true" attrColorValue="#FFC000"/>
+			</case>
+			<!-- Violet -->
+			<case additional="tracktype=grade4" attrColorValue="#9507C5">
+				<apply_if nightMode="true" attrColorValue="#9507C5"/>
+			</case>
+			<!-- Rouge  -->
+			<case additional="tracktype=grade5" attrColorValue="#C60303">
+				<apply_if nightMode="true" attrColorValue="#C60303"/>
+			</case>
+			<!-- Bleu pâle -->
+			<case additional="winter_road=yes" attrColorValue="#92E2EC">
+				<apply_if nightMode="true" attrColorValue="#92E2EC"/>
+			</case>
+			<case additionnal="tracktype=" attrColorValue="#000000">
+				<apply_if nightMode="true" attrColorValue="#000000"/>
+			</case>
+		</switch>
+	</renderingAttribute>
+	<order>
+		<switch area="true" point="false" objectType="3" order="6">
+			<case tag="overlanding" value="reserve_faunique" order="6"/>
+			<case tag="overlanding" value="pourvoirie" order="6"/>
+			<case tag="overlanding" value="zec" order="6"/>
+			<case tag="overlanding" value="banc_emprunt" order="6"/>
+			<case tag="overlanding" value="terre_autochtone" order="6"/>
+		</switch>
+		<!-- 
+		<switch>
+			<case tag="natural" value="water" order="9"/>
+		</switch>
+		-->
+		<switch area="false" objectType="1" order="9">
+			<case tag="overlanding" value="landmark" order="57"/>
+		</switch>
+	</order>
+	<polygon>
+		<switch minzoom="8">
+			<case tag="overlanding" value="pourvoirie" shader="paving_stones"/>
+			<case tag="overlanding" value="zec" shader="paving_stones_hc"/>
+			<case tag="overlanding" value="reserve_faunique" shader="nr2"/>
+			<case tag="overlanding" value="banc_emprunt" shader="sand_shader"/>
+			<case tag="overlanding" value="terre_autochtone" shader="diagonal_red_small_shader"/>
+		</switch>
+	</polygon>
+	<point>
+		<switch minzoom="8">
+			<case minzoom="8" tag="overlanding" value="landmark" icon="viewpoint"/>
+		</switch>
+		<switch>
+			<case minzoom="9" tag="aeroway" value="helipad" icon="aeroway_helipad" shield="blue_round_shield">
+				<apply_if nightMode="true" shield="blue_round_night_shield"/>
+			</case>
+			<case minzoom="9" tag="aeroway" value="aerodrome" icon="aeroway_aerodrome" shield="blue_round_shield">
+				<apply_if nightMode="true" shield="blue_round_night_shield"/>
+			</case>
+			<case minzoom="9" tag="emergency" value="phone" icon="emergency_phone" shield="red_round_shield">
+				<apply_if nightMode="true" shield="red_round_night_shield"/>
+			</case>
+			<case minzoom="9" tag="historic" value="mine" icon="historic_mine" shield="brown_round_shield">
+				<apply_if nightMode="true" shield="brown_round_night_shield" iconVisibleSize="40"/>
+			</case>
+			<case minzoom="9" tag="landuse" value="lease" icon="residential" shield="blue_round_shield">
+				<apply_if nightMode="true" shield="blue_round_night_shield" iconVisibleSize="40"/>
+			</case>
+		</switch>		
+	</point>
+	<text>
+		<switch>
+			<switch minzoom="8" maxzoom="9">
+				<case tag="overlanding" value="pourvoirie" textSize="10" textColor="#5F9B2A"/>
+				<case tag="overlanding" value="zec" textSize="10" textColor="#5F9B2A"/>
+				<case tag="overlanding" value="reserve_faunique" textSize="10" textColor="#5F9B2A"/>
+				<case tag="overlanding" value="banc_emprunt" textSize="10" textColor="#5F9B2A"/>
+				<case tag="overlanding" value="terre_autochtone" textSize="10" textColor="#5F9B2A"/>
+				<case tag="overlanding" value="landmark" textSize ="12" textColor="#800000"/>
+			</switch>
+			<switch minzoom="10">
+				<case tag="overlanding" value="pourvoirie" textSize="12" textColor="#5F9B2A"/>
+				<case tag="overlanding" value="zec" textSize="12" textColor="#5F9B2A"/>
+				<case tag="overlanding" value="reserve_faunique" textSize="12" textColor="#5F9B2A"/>
+				<case tag="overlanding" value="banc_emprunt" textSize="12" textColor="#5F9B2A"/>
+				<case tag="overlanding" value="terre_autochtone" textSize="12" textColor="#5F9B2A"/>
+				<case tag="overlanding" value="landmark" textSize ="12" textColor="#800000"/>
+			</switch>
+			<switch minzoom="10" maxzoom="13">
+				<switch moreDetailed="true">
+					<case tag="highway" value="track">
+						<apply textSize="14" nameTag="road_ref_1" />
+					</case>
+					<case tag="highway" value="tertiary">
+						<apply textSize="14" nameTag="road_ref_1" />
+					</case>
+					<apply>
+						<switch>
+							<case textLength="1" textShield="white_rounded_rectangle_1_road_shield"/>
+							<case textLength="2" textShield="white_rounded_rectangle_2_road_shield"/>
+							<case textLength="3" textShield="white_rounded_rectangle_3_road_shield"/>
+							<case textLength="4" textShield="white_rounded_rectangle_4_road_shield"/>
+							<case textLength="5" textShield="white_rounded_rectangle_5_road_shield"/>
+							<case textLength="6" textShield="white_rounded_rectangle_6_road_shield"/>
+							<case textLength="7" textShield="white_rounded_rectangle_7_road_shield"/>
+							<case textLength="8" textShield="white_square_8_road_shield"/>
+							<case textLength="9" textShield="white_square_9_road_shield"/>
+							<case textLength="10" textShield="white_square_9_road_shield"/>
+						</switch>
+					</apply>
+				</switch>
+			</switch>
+			<switch minzoom="14">
+				<case tag="highway" value="track" textSize="14"/>
+				<case minzoom="10" tag="highway" value="track" nameTag="road_ref_1"/>
+				<case tag="highway" value="tertiary" textSize="14"/>
+				<case minzoom="10" tag="highway" value="tertiary" nameTag="road_ref_1"/>
+				<apply>
+					<switch>
+						<case textLength="1" textShield="white_rounded_rectangle_1_road_shield"/>
+						<case textLength="2" textShield="white_rounded_rectangle_2_road_shield"/>
+						<case textLength="3" textShield="white_rounded_rectangle_3_road_shield"/>
+						<case textLength="4" textShield="white_rounded_rectangle_4_road_shield"/>
+						<case textLength="5" textShield="white_rounded_rectangle_5_road_shield"/>
+						<case textLength="6" textShield="white_rounded_rectangle_6_road_shield"/>
+						<case textLength="7" textShield="white_rounded_rectangle_7_road_shield"/>
+						<case textLength="8" textShield="white_square_8_road_shield"/>
+						<case textLength="9" textShield="white_square_9_road_shield"/>
+						<case textLength="10" textShield="white_square_9_road_shield"/>
+					</switch>
+				</apply>
+			</switch>
+		</switch>
+	</text>
+	<line>
+		<switch color="#999999">
+			<case minzoom="7" tag="power" value="line">
+				<case maxzoom="14" strokeWidth="0.6"/>
+				<case minzoom="15" strokeWidth="0.9"/>
+			</case>
+			<case minzoom="15" tag="power" value="minor_line" strokeWidth="0.3"/>
+			<apply_if nightMode="true" color="#777777"/>
+		</switch>
+		<switch>
+			<switch strokeWidth="0.1">
+				<case minzoom="9" tag="highway" value="track">
+					<switch moreDetailed="true">
+						<case maxzoom="12" strokeWidth_5="$trackLowZoomStrokeWidth"/>
+						<case maxzoom="13" strokeWidth_5="$trackLowZoomStrokeWidth2"/>
+						<apply pathEffect_5=""/>
+					</switch>
+					<case minzoom="14" strokeWidth_4="1.2:1.2" strokeWidth_5="$trackStrokeWidth">
+						<case showSurfaces="true" strokeWidth_5="$trackWithSurfaceStrokeWidth"/>
+						<case showSurfaceGrade="true" strokeWidth_5="$trackWithSurfaceStrokeWidth"/>
+					</case>
+					<apply minzoom="15" strokeWidth_4="1.6:1.6"/>
+					<apply_if additional="winter_road=yes" minzoom="11" strokeWidth_4="1.6:1.6"/>
+					<apply color_4="$null" color_5="$trackColor" pathEffect_5="4_2"/>
+					<apply>
+						<case tag="highway" value="track" pathEffect_5=""/>
+					</apply>
+				</case>
+			</switch>
+		</switch>
+	</line>
+</renderingStyle>
