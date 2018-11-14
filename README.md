@@ -1,4 +1,3 @@
-<#
     QOSM - Québec OSM - Collection de scripts et de programmes pour générer une carte du Québec pour l'expéditionnisme, 
 						compatible avec l'application OsmAnd (https://osmand.net) à partir de données ouvertes et gratuites.
     
@@ -17,9 +16,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#>
-
-<#
 	A propos de QOSM
 	(Anciennement Carte de l'AQE et projet RDF)
 
@@ -73,15 +69,13 @@
 	Développements à venir.
 	- Ajouter une commande à la fin du script pour exécuter OsmAndMapCreator automatically
 	- Ajouter de nouvelles données lorsqu'elles seront disponibles en données ouvertes (Territoires récréatifs, réseau hydrographique)
-#>
 
-<#
 	Problèmes connus:
 	Linux: 	ogr2ogr2 ne reconnait pas certais polypogones dans le chargement de la couche des territoires récréatifs du québec.  
 			si vous choisissez d'inclure TRQ vous devriez utiliser le script windows.
-#>
 
-<#
+			
+
 LINUX:
 Installer Windows Linux Subsystem et Ubuntu 16.04 LTS recommandé, .NET SDK ne peut pas être installé sur 18.04
 Installer les applications
@@ -110,6 +104,7 @@ Installer les applications
 		sudo apt-get update
 		sudo apt-get install postgresql-client-10
 		
+
 Avec PostgreSQL on ne peut pas passer un mot de passe sur la ligne de commande. Il faut utiliser un fichier .pgpass dans le répertoire home 
 de l'usager sous lequel le script sera exécuté.
 
@@ -123,9 +118,9 @@ par vos informations de connexion.
 
 server:port:database:username:password
 
-#>
 
-<#
+
+
 Source des données
 
 Ministère de l’Énergie et des ressources naturelles.
@@ -153,7 +148,7 @@ Canada – Gouvernement ouvert
 Réseau Zecs – Données ouvertes
     Postes d’accueil
     Campings
-#>
+
 
 
 
