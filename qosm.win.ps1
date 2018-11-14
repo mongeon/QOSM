@@ -23,6 +23,8 @@
     Modifiez les valeurs suivantes selon votre environnement et vos choix.
 #>
 
+$Linux = $false
+$Windows = $true
 
 # Emplacement de ogr2ogr
 $ogr2ogr = "C:\OSGeo4W64\bin\ogr2ogr.exe"

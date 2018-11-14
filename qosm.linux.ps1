@@ -23,6 +23,8 @@
     Modifiez les valeurs suivantes selon votre environnement et vos choix.
 #>
 
+$Linux = $false
+$Windows = $true
 
 # Emplacement de ogr2ogr
 $ogr2ogr = "/usr/bin/ogr2ogr"
