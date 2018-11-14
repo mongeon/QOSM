@@ -66,7 +66,7 @@ $QOSMFinal = "D:\OSMAnd\qosm.osm"
 
 # Identifier les couches à télécharger.  
 # Vous pouvez utiliser la variable $télécharger pour activer/désactiver tous les téléchargements d'un coup.
-$télécharger = $true
+$télécharger = $false
 $obtenirAeroports = $true
 $obtenirPistes = $true
 $obtenirBarrages = $true
@@ -81,6 +81,24 @@ $obtenirCampingsZecs = $true
 $obtenirAQRP = $true
 $obtenirTerresAutochtones = $true
 $obtenirLieuxAccueil = $true
+
+# Identifier les couches à inclure dans le fichier final.
+# Vous pouvez utiliser la variable $télécharger pour activer/désactiver tous les téléchargements d'un coup.
+$inclureAeroports = $true
+$inclurePistes = $true
+$inclureBarrages = $true
+$inclureElectrique = $true
+$inclureMines = $true
+$inclureParcRoutier = $true
+$inclurePhotoRadar = $true
+$inclureTelephone = $true
+$inclureVilles = $true
+$inclureAccueilsZecs = $true
+$inclureCampingsZecs = $true
+$inclureAQRP = $true
+$inclureTerresAutochtones = $true
+$inclureLieuxAccueil = $true
+$inclureTrq = $true
 
 # La variable $extraire est utilisée pour désactiver l'étape d'extraction des données.  C'est utile pour déboguer.
 $extraire = $true	

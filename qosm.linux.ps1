@@ -64,6 +64,24 @@ $QOSMFinal = "/mnt/d/osmand/qosm.osm"
     On peut choisir quels couches on veut inclure dans le fichier final.
 #>
 
+# Identifier les couches à télécharger.  
+# Vous pouvez utiliser la variable $télécharger pour activer/désactiver tous les téléchargements d'un coup.
+$télécharger = $false
+$obtenirAeroports = $true
+$obtenirPistes = $true
+$obtenirBarrages = $true
+$obtenirElectrique = $true
+$obtenirMines = $true
+$obtenirParcRoutier = $true
+$obtenirPhotoRadar = $true
+$obtenirTelephone = $true
+$obtenirVilles = $true
+$obtenirAccueilsZecs = $true
+$obtenirCampingsZecs = $true
+$obtenirAQRP = $true
+$obtenirTerresAutochtones = $true
+$obtenirLieuxAccueil = $true
+
 # Identifier les couches à inclure dans le fichier final.
 # Vous pouvez utiliser la variable $télécharger pour activer/désactiver tous les téléchargements d'un coup.
 $inclureAeroports = $true
