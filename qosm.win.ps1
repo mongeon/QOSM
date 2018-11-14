@@ -423,7 +423,7 @@ if(Test-path -path  "$($QOSMGeodata)\trq\terrom_s"){
     $cmdParms = $trqcmdString + '-nlt MULTIPOLYGONZ "' + $($QOSMGeodata) + '\trq\terrom_s" "pal" -s_srs EPSG:4269 -t_srs EPSG:4326 -lco geometry_name=geom -lco precision=no -lco schema=sources -lco overwrite=yes -nln "refuges_oiseaux_migrateurs"'
     start-process -filepath $ogr2ogr $cmdParms -NoNewWindow -Wait
 }
-exit
+
 Set-Item Env:PGCLIENTENCODING UTF-8
 
 # On va maintenant traiter les autres fichiers (csv, xml, xls, etc)
